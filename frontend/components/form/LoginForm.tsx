@@ -44,7 +44,7 @@ function LoginForm() {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/login`,
+        "/api/auth/login",
         {
           email: data.email,
           password: data.password,
