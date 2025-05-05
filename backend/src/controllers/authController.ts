@@ -7,6 +7,8 @@ import {
   verifyRefreshToken,
 } from "../utils/jwt";
 import RefreshToken from "../models/RefreshToken";
+import jwt from "jsonwebtoken";
+import { sendEmail } from "../utils/email";
 
 const REFRESH_TOKEN_EXPIRES_IN =
   Number(process.env.REFRESH_TOKEN_EXPIRES_IN) || 604800;
@@ -223,3 +225,55 @@ export const refresh = async (req: Request, res: Response) => {
   }
 };
 
+export const forgotPassword = async (req: Request, res: Response) => {
+  try {
+      const { email } = req.body;
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        return res.status(200).json({ message: "If the email is registered, you will receive a link to reset." });
+      }
+
+      const token = jwt.sign({ userId: user._id }, process.env.JWT_RESET_SECRET || '', { expiresIn: '1h' });
+
+      await sendEmail(user.email, token);
+
+      res.status(200).json({ message: "Reset password email sent", token });
+
+  } catch (error: any) {
+      console.error("Forgot Password error:", error);
+      res.status(500).json({ message: "Error during password reset request.", error: error.message });
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  try {
+      const { password, confirmPassword } = req.body;
+      const token = req.params.token;
+
+      if (!token || !password || !confirmPassword) {
+          return res.status(422).json({ message: "All fields are required" });
+      }
+
+      if (password !== confirmPassword) {
+          return res.status(422).json({ message: "Passwords do not match" });
+      }
+
+      if (password.length < 6) {
+          return res.status(422).json({ message: "Password must be at least 6 characters long" });
+      }
+
+      const payload = jwt.verify(token, process.env.JWT_RESET_SECRET!) as { userId: string };
+
+      const user = await User.findById(payload.userId);
+      if (!user) return res.status(422).json({ message: "User not found" });
+
+      user.password = await bcrypt.hash(password, 10);
+      await user.save();
+
+      res.status(200).json({ message: "Password updated successfully" });
+  } catch (error: any) {
+       console.error("Reset Password error:", error);
+       res.status(500).json({ message: "Error during password reset.", error: error.message });
+  }
+};

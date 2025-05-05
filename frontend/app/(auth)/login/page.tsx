@@ -24,7 +24,7 @@ function page() {
         <CardContent>
           <LoginForm />
         </CardContent>
-        <CardFooter className="flex justify-center">
+        <CardFooter className="flex flex-col space-y-2">
           <p className="mt-4 text-center text-sm text-muted-foreground">
             Don't have an account?{" "}
             <Link
@@ -32,6 +32,15 @@ function page() {
               className="font-medium text-primary hover:underline"
             >
               Register here
+            </Link>
+          </p>
+          <p className="text-center text-sm text-muted-foreground">
+            Forgot password?{" "}
+            <Link
+              href="/forgot-password"
+              className="font-medium text-primary hover:underline"
+            >
+              Click here
             </Link>
           </p>
         </CardFooter>
