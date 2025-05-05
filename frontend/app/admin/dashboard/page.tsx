@@ -38,6 +38,7 @@ export default function AdminPage() {
           updateAccessToken(newAccessToken);
         }
       } catch (err) {
+        console.log(err);
         logout();
         router.replace("/login");
       } finally {
