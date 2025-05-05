@@ -110,7 +110,7 @@ export const login = async (req: Request, res: Response) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         maxAge: REFRESH_TOKEN_EXPIRES_IN * 1000,
-        sameSite: "lax",
+        sameSite: "none",
         path: "/",
       })
       .status(200)
@@ -173,7 +173,7 @@ export const refresh = async (req: Request, res: Response) => {
       res.clearCookie("refreshToken", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: "none",
         path: "/",
       });
       return res
@@ -186,7 +186,7 @@ export const refresh = async (req: Request, res: Response) => {
       res.clearCookie("refreshToken", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: "none",
         path: "/",
       });
       return res.status(403).json({ message: "User not found" });
@@ -214,7 +214,7 @@ export const refresh = async (req: Request, res: Response) => {
       .clearCookie("refreshToken", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: "none",
         path: "/",
       })
       .status(403)
