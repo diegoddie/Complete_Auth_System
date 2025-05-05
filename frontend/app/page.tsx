@@ -6,9 +6,22 @@ import Link from "next/link";
 import { FaGithub, FaYoutube } from "react-icons/fa";
 import { useAuth } from "@/context/AuthContext";
 import { logoutService } from "@/services/authService";
+import { toast } from "sonner";
 
 export default function Home() {
   const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logoutService();
+      toast.success("Logout successful!");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      toast.error("Logout failed!");
+    } finally {
+      logout();
+    }
+  };
 
   return (
     <div>
@@ -56,21 +69,21 @@ export default function Home() {
           TypeScript, Node and Express with this step-by-step tutorial.
         </p>
 
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4 mt-8">
+        <div className="flex flex-row items-center justify-center gap-4 mt-8">
           {!user ? (
             <>
-              <Button size="lg" className="gap-1 cursor-pointer w-full" asChild>
-                <Link href="/login" className="w-full md:w-auto">
+              <Button size="lg" className="gap-1 cursor-pointer" asChild>
+                <Link href="/login" className="">
                   Login <ChevronRight className="h-4 w-4" />
                 </Link>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="gap-1 cursor-pointer w-full"
+                className="gap-1 cursor-pointer"
                 asChild
               >
-                <Link href="/register" className="w-full md:w-auto">
+                <Link href="/register" className="">
                   Register <ChevronRight className="h-4 w-4" />
                 </Link>
               </Button>
@@ -78,7 +91,7 @@ export default function Home() {
           ) : (
             <>
               <Button size="lg" className="gap-1 cursor-pointer" asChild>
-                <Link href="/profile" className="w-full md:w-auto">
+                <Link href="/profile" className="">
                   Profile <ChevronRight className="h-4 w-4" />
                 </Link>
               </Button>
@@ -86,7 +99,7 @@ export default function Home() {
                 variant="destructive"
                 size="lg"
                 className="gap-1 cursor-pointer"
-                onClick={() => logoutService(logout)}
+                onClick={handleLogout}
               >
                 Logout <ChevronRight className="h-4 w-4" />
               </Button>

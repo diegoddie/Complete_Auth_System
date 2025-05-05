@@ -109,6 +109,7 @@ export const login = async (req: Request, res: Response) => {
         secure: process.env.NODE_ENV === "production",
         maxAge: REFRESH_TOKEN_EXPIRES_IN * 1000,
         sameSite: "lax",
+        path: "/",
       })
       .status(200)
       .json({
@@ -137,14 +138,14 @@ export const logout = async (req: Request, res: Response) => {
     if (!storedRefreshToken) {
       return res.status(401).json({ message: "Refresh token not found" });
     } else {
-      storedRefreshToken.isValid = false;
-      await storedRefreshToken.save();
+      await RefreshToken.deleteOne({ token: refreshToken });
     }
 
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
+      path: "/",
     });
 
     res.status(200).json({ message: "Logout successful" });
@@ -155,32 +156,38 @@ export const logout = async (req: Request, res: Response) => {
 };
 
 export const refresh = async (req: Request, res: Response) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!refreshToken) {
+    return res.status(401).json({ message: "Refresh token missing" });
+  }
+
   try {
-    const refreshToken = req.cookies.refreshToken;
-
-    if (!refreshToken) {
-      return res.status(401).json({ message: "Refresh token missing" });
-    }
-
     const payload = verifyRefreshToken(refreshToken);
 
-    const storedRefreshToken = await RefreshToken.findOne({
-      token: refreshToken,
-      isValid: true,
-    });
+    const existingToken = await RefreshToken.findOne({ token: refreshToken, isValid: true });
 
-    if (!storedRefreshToken || !storedRefreshToken.isValid) {
+    if (!existingToken) {
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+      });
       return res
-        .status(401)
+        .status(403)
         .json({ message: "Invalid or expired refresh token" });
     }
 
-    storedRefreshToken.isValid = false;
-    await storedRefreshToken.save();
-
     const user = await User.findById(payload.userId);
     if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+      });
+      return res.status(403).json({ message: "User not found" });
     }
 
     const newPayload = {
@@ -190,23 +197,10 @@ export const refresh = async (req: Request, res: Response) => {
     };
 
     const newAccessToken = generateAccessToken(newPayload);
-    const newRefreshToken = generateRefreshToken(newPayload);
-
-    await RefreshToken.create({
-      token: newRefreshToken,
-      userId: payload.userId,
-      expiresAt: new Date(Date.now() + REFRESH_TOKEN_EXPIRES_IN * 1000),
-    });
 
     const { password: _, ...userResponse } = user.toObject();
 
     res
-      .cookie("refreshToken", newRefreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: REFRESH_TOKEN_EXPIRES_IN * 1000,
-      })
       .status(200)
       .json({ 
         accessToken: newAccessToken,
@@ -215,6 +209,12 @@ export const refresh = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error(error);
     res
+      .clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+      })
       .status(403)
       .json({
         message: "Could not refresh access token",

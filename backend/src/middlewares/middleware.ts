@@ -10,10 +10,14 @@ export const VerifyAuth = (
   res: Response,
   next: NextFunction
 ) => {
-  const accessToken = req.headers.authorization;
+  let accessToken = req.headers.authorization;
 
   if (!accessToken) {
     return res.status(401).json({ message: "Access token missing or invalid" });
+  }
+
+  if (accessToken.startsWith("Bearer ")) {
+    accessToken = accessToken.slice(7);
   }
 
   try {

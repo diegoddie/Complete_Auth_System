@@ -9,7 +9,7 @@ if (!process.env.JWT_SECRET || !process.env.JWT_REFRESH_SECRET) {
 
 const ACCESS_SECRET: Secret = process.env.JWT_SECRET as Secret
 const REFRESH_SECRET: Secret = process.env.JWT_REFRESH_SECRET as Secret
-const ACCESS_EXPIRES_IN = process.env.ACCESS_TOKEN_EXPIRES_IN || 900
+const ACCESS_EXPIRES_IN = process.env.ACCESS_TOKEN_EXPIRES_IN || 1800
 const REFRESH_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN || 604800   
 
 export interface JwtPayload {

@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { logoutService } from "@/services/authService";
 import { useRouter } from "next/navigation";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { toast } from "sonner";
 
 function Navbar() {
   const { user, logout } = useAuth();
@@ -13,10 +14,14 @@ function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await logoutService(logout);
+      await logoutService();
+      toast.success("Logout successful!");
       router.push("/");
     } catch (error) {
       console.error("Navbar: Logout failed:", error);
+      toast.error("Logout failed!");
+    } finally {
+      logout();
     }
   };
 
@@ -38,13 +43,18 @@ function Navbar() {
             </>
           ) : (
             <>
+              {user.role === "admin" && (
+                <Button variant="outline" asChild>
+                  <Link href="/admin/dashboard">Admin</Link>
+                </Button>
+              )}
               <DropdownMenu>
                 <DropdownMenuTrigger className="rounded-full bg-blue-100 px-3 py-3 text-sm font-bold hover:bg-blue-300 transition-all duration-300 cursor-pointer">
                   {user.firstName[0]}{user.lastName[0]}
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem className="hover:bg-gray-100 cursor-pointer">
-                    <Link href="/profile">Profile</Link>
+                    <Link href="/profile" className="w-full">Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem variant="destructive" onClick={() => handleLogout()} className="cursor-pointer">

@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const accessToken = request.cookies.get("refreshToken");
-  const isProtectedRoute = request.nextUrl.pathname.startsWith("/profile") || request.nextUrl.pathname.startsWith("/admin");
+  const refreshTokenCookie = request.cookies.get("refreshToken");
+  const isProtectedRoute =
+    request.nextUrl.pathname.startsWith("/profile") ||
+    request.nextUrl.pathname.startsWith("/admin");
 
-  if (isProtectedRoute && !accessToken) {
+  if (isProtectedRoute && !refreshTokenCookie) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 

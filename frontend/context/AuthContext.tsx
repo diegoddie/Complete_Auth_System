@@ -5,12 +5,11 @@ import React, {
   useContext,
   useState,
   ReactNode,
-  useEffect,
 } from "react";
-import axios from "axios";
 
 export interface User {
-  id: string;
+  _id: string;
+  createdAt: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -21,21 +20,31 @@ interface AuthContextType {
   user: User | null;
   accessToken: string | null;
   login: (userData: User, token: string) => void;
+  updateUser: (userData: User) => void;
+  updateAccessToken: (token: string) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   accessToken: null,
+  updateUser: () => {},
+  updateAccessToken: () => {},
   login: () => {},
   logout: () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
+type AuthProviderProps = {
+  children: ReactNode;
+  initialUser: User | null;
+  initialAccessToken: string | null;
+}
+
+export const AuthProvider = ({ children, initialUser, initialAccessToken }: AuthProviderProps) => {
+  const [user, setUser] = useState<User | null >(initialUser);
+  const [accessToken, setAccessToken] = useState<string | null>(initialAccessToken);
 
   const login = (userData: User, token: string) => {
     setUser(userData);
@@ -47,32 +56,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setAccessToken(null);
   };
 
-  useEffect(() => {
-    const refresh = async () => {
-      try {
-        const res = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/refresh`,
-          {},
-          { withCredentials: true }
-        );
-        if (res.data?.user && res.data?.accessToken) {
-          setUser(res.data.user);
-          setAccessToken(res.data.accessToken);
-        }
-      } catch (err) {
-        console.error("[AuthContext] Refresh error:", err);
-        logout();
-      }
-    };
-  
-    refresh();
-  }, []);  
+  const updateUser = (userData: User) => {
+    setUser(userData);
+  };
+
+  const updateAccessToken = (token: string) => {
+    setAccessToken(token);
+  };
 
   const value = {
     user,
     accessToken,
     login,
     logout,
+    updateUser,
+    updateAccessToken,
   };
 
   return (

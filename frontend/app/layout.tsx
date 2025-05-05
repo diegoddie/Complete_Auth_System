@@ -4,8 +4,8 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
-import { AuthProvider, User } from "@/context/AuthContext";
-import { getUserAndRefreshToken } from "@/lib/actions";
+import { AuthProvider } from "@/context/AuthContext";
+import { checkSession } from "@/lib/actions";
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,17 +19,19 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
+  const res = await checkSession();
+  const user = res?.user 
+  const accessToken = res?.accessToken;
   return (
     <html lang="en">
         <body
           className={`${inter.className} flex flex-col min-h-screen`}
         >
-          <AuthProvider>
+          <AuthProvider initialUser={user ?? null} initialAccessToken={accessToken ?? null}>
             <Navbar />
-            <main className="container flex-1 flex items-center justify-center px-4 mx-auto">
-              {children}
-            </main>
+              <main className="container flex-1 flex items-center justify-center px-4 mx-auto">
+                {children}
+              </main>
             <Footer />
             <Toaster />
           </AuthProvider>
