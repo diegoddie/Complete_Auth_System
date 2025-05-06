@@ -54,7 +54,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full py-10 md:py-0">
       <AdminDashboard users={dashboardData.users} totalUsers={dashboardData.totalUsers} />
     </div>
     

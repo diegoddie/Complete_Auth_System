@@ -17,7 +17,7 @@ export async function checkSession(): Promise<UserAndRefreshToken | null> {
 
   try {
     const res = await axios.post(
-      "/api/auth/refresh",
+      `${process.env.API_BASE_URL}/api/auth/refresh`,
       {}, 
       {
         headers: {

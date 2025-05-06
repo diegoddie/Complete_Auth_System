@@ -60,7 +60,7 @@ function RegisterForm() {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/register`, {
+      await axios.post("/api/auth/register", {
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,

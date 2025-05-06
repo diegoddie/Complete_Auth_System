@@ -22,7 +22,7 @@ export const getProfileService = async (
 
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/profile`,
+      `/api/profile`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -34,19 +34,17 @@ export const getProfileService = async (
     return { user: response.data.user };
   } catch (error: any) {
     if (error.response?.status === 401) {
-      console.log("getProfileService: 401 error, refreshing token");
       try {
         const refreshResponse = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/refresh`,
+          `/api/auth/refresh`,
           {},
           { withCredentials: true }
         );
 
         const newAccessToken = refreshResponse.data.accessToken;
-        console.log("getProfileService: newAccessToken:", newAccessToken);
 
         const retryResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/profile`,
+          `/api/profile`,
           {
             headers: {
               Authorization: `Bearer ${newAccessToken}`,
@@ -80,7 +78,7 @@ export const getAdminDashboard = async (
 
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard`,
+      `/api/admin/dashboard`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -94,7 +92,7 @@ export const getAdminDashboard = async (
     if (error.response?.status === 401) {
       try {
         const refreshResponse = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/refresh`,
+          `/api/auth/refresh`,
           {},
           { withCredentials: true }
         );
@@ -102,7 +100,7 @@ export const getAdminDashboard = async (
         const newAccessToken = refreshResponse.data.accessToken;
 
         const retryResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/dashboard`,
+          `/api/admin/dashboard`,
           {
             headers: {
               Authorization: `Bearer ${newAccessToken}`,

@@ -46,7 +46,7 @@ function ResetPasswordForm() {
     setIsLoading(true);
     try {
       await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/reset-password/${token}`,
+        `/api/auth/reset-password/${token}`,
         {
           password: data.password,
           confirmPassword: data.confirmPassword,

@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: "https://completeauthsystem-production.up.railway.app/api/:path*",
+        destination: `${process.env.API_BASE_URL}/api/:path*`,
       },
     ];
   },

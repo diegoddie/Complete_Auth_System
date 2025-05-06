@@ -32,7 +32,7 @@ function ForgotPasswordForm() {
     setIsLoading(true);
     try {
       await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/forgot-password`,
+        "/api/auth/forgot-password",
         {
           email: data.email,
         },
