@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { User } from "@/context/AuthContext";
 import { getAdminDashboard } from "@/services/userService";
 import AdminDashboard from "@/components/AdminDashboard";
+import { Loader2 } from "lucide-react";
 
 interface AdminDashboardData {
   totalUsers: number;
@@ -50,7 +51,7 @@ export default function AdminPage() {
   }, []);
 
   if (loading || !dashboardData) {
-    return <div>Loading admin dashboard...</div>;
+    return <Loader2 className="w-10 h-10 animate-spin" />;
   }
 
   return (

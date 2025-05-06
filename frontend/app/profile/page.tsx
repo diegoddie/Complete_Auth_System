@@ -2,6 +2,7 @@
 import ProfileCard from "@/components/ProfileCard";
 import { useAuth } from "@/context/AuthContext";
 import { getProfileService } from "@/services/userService";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -39,7 +40,7 @@ export default function ProfilePage() {
   }, []);
 
   if (loading || !user) {
-    return <div>Loading...</div>;
+    return <Loader2 className="w-10 h-10 animate-spin" />;
   }
 
   return (
