@@ -63,8 +63,7 @@ This project demonstrates how to build a robust authentication system featuring:
 
 1.  **Clone the repository:**
     ```bash
-    git clone <your-repo-url>
-    cd <your-repo-url>
+    git clone https://github.com/diegoddie/Complete_Auth_System
     ```
 
 2.  **Backend Setup (`/backend` directory):**
