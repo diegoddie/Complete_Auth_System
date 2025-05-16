@@ -50,7 +50,7 @@ export default function Home() {
             asChild
           >
             <Link
-              href="https://youtube.com/@yoimdiego"
+              href="https://www.youtube.com/watch?v=SVvCSI7T3UY"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full md:w-auto gap-4 flex items-center justify-center text-white"

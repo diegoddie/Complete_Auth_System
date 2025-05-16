@@ -4,7 +4,7 @@ Hey everyone! 👋
 Welcome to the repository for my **Complete Authentication System** built from scratch! This project is also built step-by-step in a 2-part YouTube series, where I walk you through building a secure authentication system using modern web technologies.
 
 *   **Watch Part 1 (Theory) Here:** [https://youtu.be/Xpf_QwnzG_s](https://youtu.be/Xpf_QwnzG_s) 🍿
-*   **Watch Part 2 (Project) Here:** [https://youtu.be/Xpf_QwnzG_s](https://youtu.be/Xpf_QwnzG_s) 🍿
+*   **Watch Part 2 (Project) Here:** [https://www.youtube.com/watch?v=SVvCSI7T3UY](https://www.youtube.com/watch?v=SVvCSI7T3UY)🍿
 
 ## 🌟 Project Overview
 
